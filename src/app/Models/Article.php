@@ -8,12 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Article extends Model
 {
+    protected $fillable = [
+        'title',
+        'body',
+    ];
     /**
      * Many to 1
      * Sub(atricle) -> Main(user)
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }
