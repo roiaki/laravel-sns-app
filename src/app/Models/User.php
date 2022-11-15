@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -41,4 +42,51 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Many to Many
+     * 相手からフォローされている
+     */
+    public function followers(): BelongsToMany
+    {
+        // 3param:リレーション元モデル  4param:リレーション先モデル
+        return $this->belongsToMany('App\Models\User', 'follows', 'followee_id', 'follower_id')->withTimestamps();
+    }
+
+    /**
+     * Many to Many
+     * 相手をフォローしている
+     */
+    public function followings(): BelongsToMany
+    {
+        // 3th param リレーション元、4th param リレーション先
+        return $this->belongsToMany('App\Models\User', 'follows', 'follower_id', 'followee_id')->withTimestamps();
+    }
+
+    /**
+     * フォローしているかどうか確認する
+     */
+    public function isFollowedBy(?User $user): bool
+    {
+        return $user
+            ? (bool)$this->followers->where('id', $user->id)->count()
+            : false;
+    }
+
+    /**
+     * フォロワー数を求める
+     */
+    public function getCountFollowersAttribute(): int
+    {
+        return $this->followers->count();
+    }
+
+    /**
+     * フォロー数を求める
+     */
+    public function getCountFollowingsAttribute(): int
+    {
+        return $this->followings->count();
+    }
+
 }
