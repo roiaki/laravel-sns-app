@@ -6,8 +6,8 @@
 
 @section('content')
   <div class="container">
-    <div class="row">
-      <div class="col-12">
+    <div class="d-flex justify-content-center">
+      <div class="col-8">
         <div class="card mt-3">
           <div class="card-body pt-0">
             @include('error_card_list')
@@ -22,4 +22,5 @@
       </div>
     </div>
   </div>
+
 @endsection

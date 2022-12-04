@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -44,6 +45,15 @@ class User extends Authenticatable
     ];
 
     /**
+     *  1 to Many
+     * main(User) -> sub(Article)
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany('App\Models\Article');
+    }
+
+    /**
      * Many to Many
      * 相手からフォローされている
      */
@@ -62,6 +72,16 @@ class User extends Authenticatable
         // 3th param リレーション元、4th param リレーション先
         return $this->belongsToMany('App\Models\User', 'follows', 'follower_id', 'followee_id')->withTimestamps();
     }
+
+    /**
+     * Many to Many
+     * User(main) -> likes(sub)
+     */
+    public function likes(): BelongsToMany
+    {
+        return $this->belongsToMany('App\Models\Article', 'likes')->withTimestamps();
+    }
+
 
     /**
      * フォローしているかどうか確認する
