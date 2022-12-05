@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::prefix('login')->name('login.')->group(function () {
+    Route::get('/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}');
+});
+
 Route::get('/', 'ArticleController@index')->name('articles.index');
 Route::resource('/articles', 'ArticleController')->except(['index'])->middleware('auth');
 Route::resource('/articles', 'ArticleController')->only(['show']);
@@ -28,8 +32,6 @@ Route::prefix('users')->name('users.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::put('/{name}/follow', 'UserController@follow')->name('follow');
         Route::delete('/{name}/follow', 'UserController@unfollow')->name('unfollow');
-
-        
 
     });
 });
